@@ -1,73 +1,92 @@
-import Head from 'next/head';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { NextPage } from 'next';
 
-import styles from '@/styles/Home.module.css';
+import { useAuth } from '@/contexts/auth';
 
-export default function Home() {
+import Menu from '@/components/Menu';
+import { Title } from '@/styles/pages/home';
+import { ContainerData, ContainerPage } from '@/styles/pages/geral';
+import { useTheme } from 'styled-components';
+import PrimaryDashCard from '@/components/PrimaryDashCard';
+import { formatCurrency } from '@/utils/formatCurrency';
+
+const Home: NextPage = () => {
+  const { accessToken, isLoaded } = useAuth();
+  const router = useRouter();
+  const theme = useTheme();
+
+  useEffect(() => {
+    if (isLoaded && !accessToken) {
+      router.push(`/login`);
+    }
+  }, [router, isLoaded, accessToken]);
+
+  if (!isLoaded && !accessToken) {
+    return <div />;
+  }
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>TypeScript starter for Next.js</title>
-        <meta
-          name="description"
-          content="TypeScript starter for Next.js that includes all you need to build amazing apps"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <Menu active="home" />
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <ContainerPage>
+        <Title>Painel de Controle</Title>
 
-        <p className={styles.description}>
-          Get started by editing{` `}
-          <code className={styles.code}>src/pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=typescript-nextjs-starter"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=typescript-nextjs-starter"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{` `}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
+        <ContainerData>
+          <PrimaryDashCard
+            value="102 unidades"
+            subTitle="Vendas"
+            days={{
+              DOM: { label: 75, value: 75 },
+              SEG: { label: 87, value: 87 },
+              TERÇ: { label: 25, value: 25 },
+              QUA: { label: 78, value: 78 },
+              QUI: { label: 16, value: 16 },
+              SEX: { label: 40, value: 40 },
+              SÁB: { label: 98, value: 98 },
+            }}
+            color={theme.pink}
+          />
+          <PrimaryDashCard
+            value={formatCurrency(1200)}
+            subTitle="Ganhos"
+            days={{
+              DOM: {
+                label: formatCurrency(28 * 100),
+                value: 28 * 100,
+              },
+              SEG: {
+                label: formatCurrency(18 * 100),
+                value: 18 * 100,
+              },
+              TERÇ: {
+                label: formatCurrency(0 * 100),
+                value: 0 * 100,
+              },
+              QUA: {
+                label: formatCurrency(30 * 100),
+                value: 30 * 100,
+              },
+              QUI: {
+                label: formatCurrency(16 * 100),
+                value: 16 * 100,
+              },
+              SEX: {
+                label: formatCurrency(35 * 100),
+                value: 35 * 100,
+              },
+              SÁB: {
+                label: formatCurrency(37 * 100),
+                value: 37 * 100,
+              },
+            }}
+            color={theme.cyan}
+          />
+        </ContainerData>
+      </ContainerPage>
+    </>
   );
-}
+};
+
+export default Home;

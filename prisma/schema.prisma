@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ForgotToken {
+  id          String    @default(cuid()) @id
+  token       String
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+}
+
+model User {
+  id          String    @default(cuid()) @id
+  name        String
+  email       String    @unique
+  password    String
+  avatar      String?
+  levelAccess Int
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  updatedAt   DateTime  @updatedAt @map(name: "updated_at")
+  tokens      ForgotToken[]
+  @@map(name: "users")
+}
+
+model Category {
+  id       String @default(cuid()) @id
+  name     String @unique
+  products Product[]
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  updatedAt   DateTime  @updatedAt @map(name: "updated_at")
+}
+
+model Ingredient {
+  id         String @default(cuid()) @id
+  name       String
+  isLocked   Boolean
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String
+}
+
+model Product {
+  id              String @default(cuid()) @id
+  name            String
+  thumbnail       String
+  description     String
+  price           Float
+  stripe_price_id String?
+  stripe_prod_id  String?
+  ingredients     Ingredient[]
+  category        Category @relation(fields: [categoryId], references: [id])
+  categoryId      String
+  createdAt       DateTime  @default(now()) @map(name: "created_at")
+  updatedAt       DateTime  @updatedAt @map(name: "updated_at")
+}
