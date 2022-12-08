@@ -17,8 +17,8 @@ const handler = nc<TApiRequestAuth, NextApiResponse>()
         metadata: {
           user_id: req.user.sub,
         },
-        cancel_url: `https://lestore-back.vercel.app/error`,
-        success_url: `https://lestore-back.vercel.app/success`,
+        cancel_url: `https://hugulosao-api.vercel.app/error`,
+        success_url: `https://hugulosao-api.vercel.app/success`,
         shipping_address_collection: {
           allowed_countries: [`BR`],
         },
