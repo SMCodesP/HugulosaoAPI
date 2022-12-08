@@ -15,6 +15,10 @@ const handler = nc<NextApiRequest, NextApiResponse>().get<
       where: {
         categoryId: String(id),
       },
+      include: {
+        category: true,
+        ingredients: true,
+      },
     });
 
     return res.json(category);
